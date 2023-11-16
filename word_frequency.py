@@ -1,5 +1,13 @@
 # -*- coding: utf-8 -*-
 
+"""
+transcript가 들어오면 자주 사용된 keywords TOP 10개를 추출해서 DB에 저장하는 코드
+TOP 10개 output format: [('요양', 6), ('확진', 6), ('사망자', 5), ('시설', 5), ('병원', 5), ('환자', 3), ('집단', 3), ('고령', 2), ('자가', 2), ('치료', 2)]
+* 10개 추출 시 단어가 1자리 (e.g. 개, 명, 달)인 것은 제외
+* 최종 10개 빈도수가 1번인거는 아예 제거해서 마지막 결과가 10개 미만이 될 수 있음
+* sqlite db 안에 output format인 배열을 그대로 넣기 위해 line 46에서 array -> string 처리를 해주어서 이후 이 값을 코드에서 재사용할 시 parsing하는 작업이 필요함
+"""
+
 from konlpy.tag import Okt
 from collections import Counter
 import sqlite3

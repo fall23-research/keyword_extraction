@@ -22,9 +22,12 @@ importlib-metadata==6.1.0
 itsdangerous==2.1.2
 jax==0.4.12
 Jinja2==3.1.2
+JPype1==1.4.1
 keras==2.9.0
 Keras-Preprocessing==1.1.2
+konlpy==0.6.0
 libclang==16.0.0
+lxml==4.9.3
 Markdown==3.4.3
 MarkupSafe==2.1.2
 ml-dtypes==0.2.0
