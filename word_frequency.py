@@ -12,15 +12,15 @@ from konlpy.tag import Okt
 from collections import Counter
 import sqlite3
 
-table_name = "news_covid_video"
-db_path = "/Users/siwon/Desktop/Fall-23/research/official_news_dataset/news_dataset.sqlite"
+table_name = "news_video"
+db_path = "/Users/siwon/Desktop/Fall-23/research/official_news_dataset/covid_news_data.sqlite"
 
 # Connect to the existing SQLite database
 conn_existing = sqlite3.connect(db_path)
 cursor_existing = conn_existing.cursor()
 
 # Execute an SQL query to retrieve the data from the specified table
-cursor_existing.execute(f'SELECT video_id, text_display FROM {table_name}')
+cursor_existing.execute(f'SELECT video_id, transcript FROM {table_name}')
 transcripts = cursor_existing.fetchall()
 
 # Close the read-only database connection
@@ -33,11 +33,18 @@ cursor_update = conn_update.cursor()
 # Tokenization with KoNLPy
 okt = Okt()
 
+# Define stop words
+stopwords = [
+    '기자', '앵커', '이제', '생각', '부분', '동안', '전망', '지금', '관련', '특파원', '해도', 
+    '얘기', '언제', '언제', '조금', '과정', '사실', '때문', '오늘', '위해', '대해', '우리',
+    '음악', '논의', '입장', '경우', 
+    ]
+
 for video_id, transcript in transcripts:
     tokens = okt.pos(transcript, stem=True, norm=True)
 
-    # Filter nouns and adjectives (you can customize this based on your requirements)
-    filtered_tokens = [word for word, pos in tokens if pos in ['Noun'] and len(word) > 1]
+    # Filter nouns and adjectives, excluding stopwords
+    filtered_tokens = [word for word, pos in tokens if pos in ['Noun'] and len(word) > 1 and word not in stopwords]
 
     # Frequency count
     word_freq = Counter(filtered_tokens)
@@ -45,8 +52,12 @@ for video_id, transcript in transcripts:
 
     frequent_words_str = ', '.join([f"('{word}', {freq})" for word, freq in most_freq_words if freq > 1])
 
-    # frequent_words 컬럼 업데이트
-    update_query = f"UPDATE your_table_name SET frequent_words = '{frequent_words_str}' WHERE video_id = '{video_id}';"
-    cursor_update.execute(update_query)
+    print(f"Video_id: {video_id} - {frequent_words_str}")
 
+    # frequent_words 컬럼 업데이트
+    update_query = f"UPDATE news_video SET freq_keywords = ? WHERE video_id = ?;"
+    cursor_update.execute(update_query, (frequent_words_str, video_id))
+
+conn_update.commit()
 conn_update.close()
+
