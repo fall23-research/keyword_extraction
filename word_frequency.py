@@ -12,8 +12,8 @@ from konlpy.tag import Okt
 from collections import Counter
 import sqlite3
 
-table_name = "news_video"
-db_path = "/Users/siwon/Desktop/Fall-23/research/official_news_dataset/covid_news_data.sqlite"
+table_name = "news_covid_video"
+db_path = "/Users/siwon/Desktop/Fall-23/research/official_news_dataset/news_dataset.sqlite"
 
 # Connect to the existing SQLite database
 conn_existing = sqlite3.connect(db_path)
@@ -55,7 +55,7 @@ for video_id, transcript in transcripts:
     print(f"Video_id: {video_id} - {frequent_words_str}")
 
     # frequent_words 컬럼 업데이트
-    update_query = f"UPDATE news_video SET freq_keywords = ? WHERE video_id = ?;"
+    update_query = f"UPDATE {table_name} SET freq_keywords = ? WHERE video_id = ?;"
     cursor_update.execute(update_query, (frequent_words_str, video_id))
 
 conn_update.commit()
