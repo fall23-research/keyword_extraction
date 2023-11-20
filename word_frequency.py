@@ -12,8 +12,8 @@ from konlpy.tag import Okt
 from collections import Counter
 import sqlite3
 
-table_name = "news_covid_video"
-db_path = "/Users/siwon/Desktop/Fall-23/research/official_news_dataset/news_dataset.sqlite"
+table_name = "news_comment"
+db_path = "/Users/siwon/Desktop/Fall-23/research/official_news_dataset/covid_news_data.sqlite"
 
 # Connect to the existing SQLite database
 conn_existing = sqlite3.connect(db_path)
